@@ -1,6 +1,5 @@
 import React, {JSX, useEffect} from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import Home from './Home';
 import BusTime from './BusTime';
 import BusMap from './BusMap';
 import { trackNaverPageview } from "./naverAnalytics";
@@ -31,7 +30,7 @@ function App(): JSX.Element {
         <Router>
             <NaverAnalyticsBridge />
             <Routes>
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<BusTime />} />
                 <Route path="/busTime" element={<BusTime />} />
                 <Route path="/map" element={<BusMap />} />
             </Routes>

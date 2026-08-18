@@ -3,12 +3,10 @@ import React from 'react';
 interface HeaderProps {
     isCompact: boolean;
     title: string;
-    refreshing: boolean;
-    goBack: () => void;
-    handleRefresh: () => void;
+    goMap: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ isCompact, title, refreshing, goBack, handleRefresh }) => {
+export const Header: React.FC<HeaderProps> = ({ isCompact, title, goMap }) => {
     return (
         <header className="sticky top-0 z-30 backdrop-blur bg-white/95 border-b border-stone-100 shadow-sm transition-all">
             <div
@@ -18,15 +16,17 @@ export const Header: React.FC<HeaderProps> = ({ isCompact, title, refreshing, go
             >
                 <div className="flex items-center gap-3">
                     <button
-                        onClick={goBack}
-                        className="mr-2 px-3 py-1.5 rounded-lg border border-stone-200 text-green-900 hover:bg-stone-50 hover:shadow-sm active:scale-95 transition inline-flex items-center gap-1"
-                        aria-label="뒤로가기"
-                        title="뒤로가기"
+                        onClick={goMap}
+                        className="mr-2 px-3 py-1.5 rounded-lg border border-stone-200 text-green-900 hover:bg-stone-50 hover:shadow-sm active:scale-95 transition inline-flex items-center gap-1.5"
+                        aria-label="내 주변 정류장 지도"
+                        title="내 주변 정류장"
                     >
                         <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4" aria-hidden="true">
-                            <path d="M15 6l-6 6 6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                                  strokeLinejoin="round"/>
+                            <path d="M12 21s7-6.5 7-11a7 7 0 1 0-14 0c0 4.5 7 11 7 11z" stroke="currentColor"
+                                  strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <circle cx="12" cy="10" r="2.5" stroke="currentColor" strokeWidth="2"/>
                         </svg>
+                        <span className="text-sm font-medium">내 주변</span>
                     </button>
                     <h1
                         className={`font-extrabold text-green-950 tracking-tight transition-all ${
@@ -36,22 +36,6 @@ export const Header: React.FC<HeaderProps> = ({ isCompact, title, refreshing, go
                         {title}
                     </h1>
                 </div>
-
-                <button
-                    type="button"
-                    onClick={handleRefresh}
-                    className="text-xs px-2.5 py-1 rounded-md border border-stone-200 text-green-900 hover:bg-stone-50 active:scale-95 transition inline-flex items-center gap-1"
-                    title="새로고침"
-                >
-                    {refreshing ? (
-                        <>
-                            <span className="inline-block w-3 h-3 border-2 border-green-900 border-t-transparent rounded-full animate-spin"/>
-                            새로고침…
-                        </>
-                    ) : (
-                        <>↻ 새로고침</>
-                    )}
-                </button>
             </div>
         </header>
     );

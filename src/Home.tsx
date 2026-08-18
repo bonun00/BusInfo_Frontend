@@ -8,6 +8,9 @@ const Home: React.FC = () => {
     const handleNavigation = (filename: string): void => {
         navigate(`/busTime?json=${filename}`);
     };
+
+    // 마지막에 본 방향으로 진입 (없으면 창원·마산 방면)
+    const startFile = localStorage.getItem("lastDirectionFile") || "tomasan_V1.json";
     const goToMap = (): void => {
         navigate('/map');
     };
@@ -68,9 +71,9 @@ const Home: React.FC = () => {
             </header>
 
             <main className="flex-1 flex items-center justify-center">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full max-w-3xl">
+                <div className="w-full max-w-xl mx-auto">
                     <button
-                        onClick={() => handleNavigation('tomasan_V1.json')}
+                        onClick={() => handleNavigation(startFile)}
                         className="group relative w-full p-7 rounded-2xl
                                    bg-gradient-to-br from-green-900 to-green-800 text-white font-bold
                                    shadow-lg shadow-green-900/20
@@ -80,28 +83,14 @@ const Home: React.FC = () => {
                                    transition-all duration-200
                                    text-xl md:text-2xl leading-snug"
                     >
-                        <div className="flex items-center justify-between">
-                            <span className="tracking-wide group-hover:scale-105 transition-transform">
-                                창원/마산 방면
-                            </span>
-                            <span className="text-3xl md:text-4xl text-green-300 transform group-hover:translate-x-1 transition-transform">→</span>
-                        </div>
-                    </button>
-
-                    <button
-                        onClick={() => handleNavigation('tohaman_V1.json')}
-                        className="group relative w-full p-7 rounded-2xl
-                                   bg-gradient-to-br from-green-900 to-green-800 text-white font-bold
-                                   shadow-lg shadow-green-900/20
-                                   hover:shadow-2xl hover:shadow-green-900/30 hover:translate-y-[-2px]
-                                   active:scale-95 active:shadow-md
-                                   focus:outline-none focus-visible:ring-2 focus-visible:ring-green-700
-                                   transition-all duration-200
-                                   text-xl md:text-2xl leading-snug"
-                    >
-                        <div className="flex items-center justify-between">
-                            <span className="tracking-wide group-hover:scale-105 transition-transform">
-                                삼칠/대산 방면
+                        <div className="flex items-center justify-between gap-4">
+                            <span className="text-left">
+                                <span className="block tracking-wide group-hover:scale-105 transition-transform origin-left">
+                                    버스 시간표 보기
+                                </span>
+                                <span className="block mt-1 text-sm font-medium text-green-200/90">
+                                    창원·마산 ↔ 삼칠·대산 · 방향은 안에서 전환
+                                </span>
                             </span>
                             <span className="text-3xl md:text-4xl text-green-300 transform group-hover:translate-x-1 transition-transform">→</span>
                         </div>
