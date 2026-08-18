@@ -24,7 +24,6 @@ export function useBusData(jsonFile: string) {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [busNumbers, setBusNumbers] = useState<string[]>([]);
-    const [locations, setLocations] = useState<string[]>([]);
     const [selectedBusNumber, setSelectedBusNumber] = useState<string[]>([]);
     const [selectedLocation, setSelectedLocation] = useState("");
     const [onlyUpcoming, setOnlyUpcoming] = useState(false);
@@ -42,7 +41,7 @@ export function useBusData(jsonFile: string) {
         [favoritesByFile, jsonFile]
     );
 
-    const fetchData = async () => {
+    const fetchData = async (): Promise<string[]> => {
         try {
             const res = await fetch(`/${jsonFile}`);
             const json: BusData[] = await res.json();
@@ -57,20 +56,29 @@ export function useBusData(jsonFile: string) {
                 new Set<string>(filteredData.map(d => d.busNumber.split("-")[0]))
             );
             setBusNumbers(uniqueNumbers);
-
-            const allStops = new Set<string>();
-            filteredData.forEach(item => item.route.forEach(r => allStops.add(r.stop)));
-            setLocations(Array.from(allStops));
+            return uniqueNumbers;
         } catch (e) {
             console.error(e);
+            return [];
         }
     };
+
+    // 정류장 목록은 선택된 노선 기준으로 좁히고 가나다순 정렬.
+    // 노선이 하나도 선택되지 않았으면 전체 정류장을 노출한다.
+    const locations = useMemo(() => {
+        const active = selectedBusNumber.length
+            ? data.filter((d) => selectedBusNumber.includes(d.busNumber.split("-")[0]))
+            : data;
+        const set = new Set<string>();
+        active.forEach((d) => d.route.forEach((r) => set.add(r.stop)));
+        return Array.from(set).sort((a, b) => a.localeCompare(b, "ko"));
+    }, [data, selectedBusNumber]);
 
     useEffect(() => {
         let mounted = true;
         (async () => {
             setLoading(true);
-            await fetchData();
+            const allRouteNumbers = await fetchData();
             setLoading(false);
 
             try {
@@ -107,7 +115,8 @@ export function useBusData(jsonFile: string) {
                     setSelectedLocation(parsed.selectedLocation || "");
                     setOnlyUpcoming(Boolean(parsed.onlyUpcoming));
                 } else {
-                    setSelectedBusNumber([]);
+                    // 첫 방문: 노선을 모두 선택해 두어 정류장만 고르면 시간표가 바로 뜨게 한다.
+                    setSelectedBusNumber(allRouteNumbers);
                     setSelectedLocation("");
                     setOnlyUpcoming(false);
                 }
